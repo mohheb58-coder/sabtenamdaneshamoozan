@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فرم ثبت نام — مدرسه شهید نیاسری ۱</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#1a4a7a;--primary-light:#2563a8;--accent:#e8b84b;--surface:#f7f8fc;--card:#fff;--border:#d0d8e8;--text:#1a2332;--text-muted:#6b7a8d;--success:#16a34a;--error:#dc2626;--shadow:0 2px 12px rgba(26,74,122,.10);--shadow-lg:0 8px 32px rgba(26,74,122,.16)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Vazirmatn',sans-serif;background:linear-gradient(135deg,#e8eef7,#f7f8fc,#eef3fb);min-height:100vh;color:var(--text);padding:24px 16px 48px}
+.page-header{text-align:center;margin-bottom:28px;padding:32px 24px 24px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:20px;color:#fff;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.page-header::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.07)}
+.page-header .icon{font-size:44px;margin-bottom:8px;display:block}
+.page-header h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.page-header p{font-size:13px;opacity:.85}
+.form-container{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.section-card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;border:1px solid rgba(208,216,232,.6)}
+.section-header{background:linear-gradient(90deg,var(--primary),var(--primary-light));color:#fff;padding:13px 20px;display:flex;align-items:center;gap:10px;font-weight:600;font-size:14.5px;cursor:pointer;user-select:none}
+.section-header.accent{background:linear-gradient(90deg,#c99a2e,#e8b84b);color:var(--primary)}
+.section-header.green{background:linear-gradient(90deg,#145a38,#16a34a)}
+.toggle-icon{margin-right:auto;margin-left:0;font-size:18px;transition:transform .3s}
+.section-card.collapsed .section-body{display:none}
+.section-card.collapsed .toggle-icon{transform:rotate(-90deg)}
+.section-body{padding:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px 18px}
+.field-group{display:flex;flex-direction:column;gap:5px}
+.field-group.full{grid-column:1/-1}
+label{font-size:12px;font-weight:600;color:var(--primary);display:flex;align-items:center;gap:4px}
+label .req{color:var(--error);font-size:14px}
+label .locked-badge{font-size:10px;background:#f1f5f9;color:#94a3b8;border:1px solid #e2e8f0;padding:1px 6px;border-radius:4px}
+input,select,textarea{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:9px;font-family:'Vazirmatn',sans-serif;font-size:13px;color:var(--text);background:var(--surface);transition:border-color .2s;direction:rtl}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-light);background:#fff;box-shadow:0 0 0 3px rgba(37,99,168,.12)}
+input[readonly],select[disabled]{background:#f1f5f9;color:#94a3b8;cursor:not-allowed;border-color:#e2e8f0}
+textarea{resize:vertical;min-height:65px}
+.dob-group{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.photo-upload-box{display:flex;align-items:center;gap:16px;padding:16px;background:var(--surface);border-radius:12px;border:2px dashed var(--border)}
+.photo-preview{width:90px;height:90px;border-radius:10px;object-fit:cover;border:2px solid var(--border);background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:40px;flex-shrink:0;overflow:hidden}
+.photo-preview img{width:100%;height:100%;object-fit:cover}
+.submit-zone{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 20px;background:var(--card);border-radius:16px;box-shadow:var(--shadow);border:1px solid rgba(208,216,232,.6)}
+.btn-submit{width:100%;max-width:420px;padding:14px 32px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-family:'Vazirmatn',sans-serif;font-size:15px;font-weight:700;border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 16px rgba(26,74,122,.25);transition:transform .15s,box-shadow .15s}
+.btn-submit:hover:not(:disabled){transform:translateY(-2px)}
+.btn-submit:disabled{opacity:.65;cursor:not-allowed}
+.status-msg{padding:14px 20px;border-radius:10px;font-size:14px;font-weight:600;text-align:center;display:none;width:100%;max-width:520px;line-height:1.8;white-space:pre-line}
+.status-msg.success{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7;display:block}
+.status-msg.error{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;display:block}
+.status-msg.warning{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;display:block}
+.loading-spinner{display:inline-block;width:17px;height:17px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-left:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loadingOverlay{position:fixed;inset:0;background:rgba(255,255,255,.95);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+#loadingOverlay .big-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+@media(max-width:700px){.section-body{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.section-body{grid-template-columns:1fr}.dob-group{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="loadingOverlay">
+  <div class="big-spinner"></div>
+  <p style="font-size:14px;color:#6b7a8d;font-weight:600">در حال بارگذاری فرم...</p>
+</div>
+<div class="form-container" id="formWrapper" style="display:none">
+  <div class="page-header">
+    <span class="icon">🎒</span>
+    <h1>فرم ثبت نام دانش آموز</h1>
+    <p>مدرسه شهید نیاسری ۱ — فیلدهای ستاره‌دار اجباری هستند</p>
+  </div>
+  <form id="mainForm"></form>
+</div>
+<script>
+var SHEETS_URL = "https://script.google.com/macros/s/AKfycbyp568Cg4-F5WFnxrrOmxvy-wcAXj0esjk8_0Zrz_NZNIMWcTPAf7831AVZRCTARjvcUQ/exec";
+var SCHOOL_NAME = "مدرسه شهید نیاسری ۱";
+
+var SECTIONS_DEF=[
+  {key:'student',title:'اطلاعات دانش آموز',icon:'👤',style:''},
+  {key:'family',title:'وضعیت خانوادگی',icon:'🏠',style:''},
+  {key:'health',title:'وضعیت سلامت و بیمه',icon:'🏥',style:''},
+  {key:'father',title:'اطلاعات پدر',icon:'👨',style:'accent'},
+  {key:'mother',title:'اطلاعات مادر',icon:'👩',style:'accent'},
+  {key:'uniform',title:'لباس فرم مدرسه',icon:'👕',style:'green',note:'توسط مدرسه تکمیل می‌شود'}
+];
+
+var DEFAULT_FIELDS=[
+  {name:'نام',type:'text',section:'student'},{name:'نام خانوادگی',type:'text',section:'student'},
+  {name:'کد ملی',type:'text',section:'student',maxlen:10},{name:'__dob__',type:'dob',section:'student',label:'تاریخ تولد'},
+  {name:'پایه',type:'select',opts:['اول','دوم','سوم','چهارم','پنجم','ششم'],section:'student'},
+  {name:'شماره کلاس',type:'text',section:'student'},{name:'meliat',type:'select',opts:['ایرانی','افغان','سایر'],section:'student'},
+  {name:'دین',type:'select',opts:['اسلام','مسیحیت','یهودیت','زرتشت','سایر'],section:'student'},
+  {name:'مذهب',type:'select',opts:['شیعه','سنی','سایر'],section:'student'},
+  {name:'سریال شناسنامه',type:'text',section:'student',maxlen:6},{name:'سری عددی شناسنامه',type:'text',section:'student'},
+  {name:'سری حروف شناسنامه',type:'text',section:'student',maxlen:5},{name:'محل صدور',type:'text',section:'student'},
+  {name:'دست غالب',type:'select',opts:['راست دست','چپ دست'],section:'student'},
+  {name:'سابقه پیش دبستانی',type:'select',opts:['دارد','ندارد'],section:'student'},
+  {name:'تعداد اعضای خانواده',type:'text',section:'family'},{name:'چندمین فرزند خانواده',type:'text',section:'family'},
+  {name:'آیا پدر و مادر متارکه کرده اند؟',type:'select',opts:['خیر','بله'],section:'family'},
+  {name:'دانش آموز با چه کسی زندگی می کند؟',type:'select',opts:['پدر و مادر','فقط پدر','فقط مادر','پدربزرگ و مادربزرگ'],section:'family'},
+  {name:'وضعیت مالی',type:'select',opts:['خیلی خوب','خوب','متوسط','ضعیف','نیازمند به کمک'],section:'family'},
+  {name:'موبایل شاد',type:'tel',section:'family',maxlen:11},{name:'تلفن منزل',type:'tel',section:'family',maxlen:11},
+  {name:'کد پستی',type:'text',section:'family',maxlen:10},{name:'آدرس',type:'text',section:'family',full:true},
+  {name:'وضعیت بیمه',type:'select',opts:['دارد','ندارد'],section:'health'},
+  {name:'نوع بیمه',type:'select',opts:['سلامت','تأمین اجتماعی','خدمات درمانی','ایرانیان'],section:'health'},
+  {name:'وضعیت جسمانی',type:'select',opts:['سالم','دارای بیماری','دارای معلولیت'],section:'health'},
+  {name:'توضیحات بیماری خاص',type:'textarea',section:'health',full:true},
+  {name:'نام پدر',type:'text',section:'father'},{name:'کد ملی پدر',type:'text',section:'father',maxlen:10},
+  {name:'شماره شناسنامه پدر',type:'text',section:'father'},{name:'سری عددی شناسنامه پدر',type:'text',section:'father'},
+  {name:'سری حروف شناسنامه پدر',type:'text',section:'father'},{name:'محل صدور پدر',type:'text',section:'father'},
+  {name:'تاریخ تولد پدر',type:'text',section:'father'},
+  {name:'مدرک تحصیلی پدر',type:'select',opts:['بی سواد','خواندن و نوشتن','ابتدایی','سیکل','دیپلم','فوق دیپلم','لیسانس','فوق لیسانس','دکترا'],section:'father'},
+  {name:'شغل پدر',type:'text',section:'father'},{name:'وضعیت حیات پدر',type:'select',opts:['در قید حیات','فوت کرده'],section:'father'},
+  {name:'موبایل پدر',type:'tel',section:'father',maxlen:11},
+  {name:'نام مادر',type:'text',section:'mother'},{name:'نام خانوادگی مادر',type:'text',section:'mother'},
+  {name:'کد ملی مادر',type:'text',section:'mother',maxlen:10},{name:'سریال شناسنامه مادر',type:'text',section:'mother',maxlen:6},
+  {name:'سری عددی شناسنامه مادر',type:'text',section:'mother'},{name:'سری حروف شناسنامه مادر',type:'text',section:'mother'},
+  {name:'محل صدور مادر',type:'text',section:'mother'},{name:'تاریخ تولد مادر',type:'text',section:'mother'},
+  {name:'مدرک تحصیلی مادر',type:'select',opts:['بی سواد','خواندن و نوشتن','ابتدایی','سیکل','دیپلم','فوق دیپلم','لیسانس','فوق لیسانس','دکترا'],section:'mother'},
+  {name:'شغل مادر',type:'text',section:'mother'},{name:'وضعیت حیات مادر',type:'select',opts:['در قید حیات','فوت کرده'],section:'mother'},
+  {name:'موبایل مادر',type:'tel',section:'mother',maxlen:11},
+  {name:'لباس فرم مدرسه',type:'select',opts:['روپوش تک','روپوش و شلوار','شلوار تک','نیاز ندارد'],section:'uniform',defaultLocked:true},
+  {name:'سایز لباس',type:'select',opts:['سایز0','سایز1','سایز2','سایز3','سایز4','سایز5','سایز6','سایز7','سایز8','سایز9'],section:'uniform',defaultLocked:true},
+  {name:'مبلغ  پرداخت شده',type:'number',section:'uniform',defaultLocked:true},
+  {name:'مبلغ مانده',type:'number',section:'uniform',defaultLocked:true},
+  {name:'تحویل',type:'select',opts:['تحویل شده','تحویل نشده'],section:'uniform',defaultLocked:true}
+];
+
+var allFields=DEFAULT_FIELDS;
+var reqFields=['نام','نام خانوادگی','کد ملی','پایه','موبایل شاد','نام پدر','موبایل پدر','نام مادر','موبایل مادر','آدرس'];
+var lockedFields=['لباس فرم مدرسه','سایز لباس','مبلغ  پرداخت شده','مبلغ مانده','تحویل'];
+var photoEnabled=false;
+var photoData='';
+
+async function loadSettings(){
+  if(!SHEETS_URL||SHEETS_URL==='YOUR_WEB_APP_URL_HERE'){buildForm();return;}
+  try{
+    var res=await fetch(SHEETS_URL+'?action=getSettings&t='+Date.now());
+    var json=await res.json();
+    if(json.reqFields) reqFields=json.reqFields;
+    if(json.lockedFields) lockedFields=json.lockedFields;
+    if(json.allFields&&json.allFields.length) allFields=mergeFields(json.allFields);
+    // photoEnabled ممکنه boolean یا string باشه
+    if(json.photoEnabled!==undefined&&json.photoEnabled!==null)
+      photoEnabled=(json.photoEnabled===true||json.photoEnabled==='true');
+  }catch(e){ console.log('settings error:',e); }
+  buildForm();
+}
+
+function mergeFields(serverFields){
+  // فیلدهای پیش‌فرض + فیلدهای custom سرور
+  var result=[];
+  serverFields.forEach(function(sf){
+    if(sf.visible===false) return; // مخفی‌ها را اضافه نکن
+    var def=DEFAULT_FIELDS.find(function(d){return d.name===sf.name;});
+    if(def){
+      // فیلد پیش‌فرض: ترکیب با اطلاعات سرور
+      result.push(Object.assign({},def,sf));
+    } else {
+      // فیلد custom: از اطلاعات سرور کامل استفاده کن
+      result.push({
+        name: sf.name,
+        type: sf.type||'text',
+        section: sf.section||'student',
+        visible: true,
+        custom: true,
+        opts: sf.opts||[],
+        label: sf.label||sf.name,
+        full: sf.full||false,
+        maxlen: sf.maxlen||null,
+        defaultLocked: sf.defaultLocked||false
+      });
+    }
+  });
+  return result.length ? result : DEFAULT_FIELDS;
+}
+
+function buildForm(){
+  var form=document.getElementById('mainForm');
+  var html='';
+  var visibleFields=allFields.filter(f=>f.visible!==false);
+
+  // عکس دانش آموز
+  if(photoEnabled){
+    html+='<div class="section-card"><div class="section-header" onclick="toggleSection(\'sec_photo\')"><span>📷</span> عکس دانش آموز <span class="toggle-icon">▾</span></div>'
+      +'<div class="section-body cols-1" id="sec_photo" style="display:block"><div class="field-group full">'
+      +'<div class="photo-upload-box">'
+      +'<div class="photo-preview" id="photoPreviewBox"><span>👤</span></div>'
+      +'<div><label style="font-size:13px;font-weight:600;margin-bottom:8px;display:block">بارگذاری عکس دانش آموز</label>'
+      +'<input type="file" id="photoFileInput" accept="image/*" onchange="handlePhoto(this)" style="font-size:12px">'
+      +'<p style="font-size:11px;color:var(--text-muted);margin-top:6px">حداکثر ۲MB — فرمت JPG یا PNG</p>'
+      +'</div></div></div></div></div>';
+  }
+
+  SECTIONS_DEF.forEach(function(sec){
+    var fields=visibleFields.filter(f=>f.section===sec.key);
+    if(!fields.length) return;
+    var hClass='section-header'+(sec.style?' '+sec.style:'');
+    var noteHtml=sec.note?'<span style="font-size:11px;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:6px;margin-right:4px">'+sec.note+'</span>':'';
+    html+='<div class="section-card'+(SECTIONS_DEF.indexOf(sec)===0?'':' collapsed')+'" id="sec_'+sec.key+'">'
+      +'<div class="'+hClass+'" onclick="toggleSection(\'sec_'+sec.key+'\')">'
+      +'<span>'+sec.icon+'</span> '+sec.title+' '+noteHtml+'<span class="toggle-icon">▾</span></div>'
+      +'<div class="section-body">';
+    fields.forEach(function(f){
+      var isReq=reqFields.includes(f.name);
+      var isLocked=lockedFields.includes(f.name)||f.defaultLocked;
+      var reqStar=isReq?'<span class="req">*</span>':'';
+      var lockBadge=isLocked?'<span class="locked-badge">🔒 مدرسه</span>':'';
+      var fullCls=f.full?' full':'';
+      if(f.type==='dob'){
+        html+='<div class="field-group'+fullCls+'"><label>'+( f.label||f.name)+' '+reqStar+'</label><div class="dob-group">';
+        html+='<select name="سال تولد"><option value="">سال</option>';
+        for(var y=1388;y<=1402;y++) html+='<option>'+y+'</option>';
+        html+='</select><select name="ماه تولد"><option value="">ماه</option>';
+        ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'].forEach(function(m,i){
+          html+='<option value="'+(i+1<10?'0'+(i+1):i+1)+'">'+m+'</option>';
+        });
+        html+='</select><select name="روز تولد"><option value="">روز</option>';
+        for(var d=1;d<=31;d++) html+='<option value="'+(d<10?'0'+d:d)+'">'+d+'</option>';
+        html+='</select></div></div>';
+        return;
+      }
+      var reqAttr=(isReq&&!isLocked)?'required':'';
+      var lockAttr=isLocked?(f.type==='select'?'disabled':'readonly'):'';
+      var maxAttr=f.maxlen?'maxlength="'+f.maxlen+'"':'';
+      var ph=isLocked?'placeholder="توسط مدرسه تکمیل می‌شود"':'';
+      if(f.type==='select'){
+        var opts=(f.opts||[]).map(o=>'<option value="'+o+'">'+o+'</option>').join('');
+        html+='<div class="field-group'+fullCls+'"><label>'+(f.label||f.name)+' '+reqStar+' '+lockBadge+'</label>'
+          +'<select name="'+f.name+'" '+reqAttr+' '+lockAttr+'><option value="">'+(isLocked?'توسط مدرسه تعیین می‌شود':'انتخاب کنید')+'</option>'+opts+'</select></div>';
+      }else if(f.type==='textarea'){
+        html+='<div class="field-group'+fullCls+'"><label>'+(f.label||f.name)+' '+reqStar+' '+lockBadge+'</label>'
+          +'<textarea name="'+f.name+'" '+reqAttr+' '+lockAttr+'></textarea></div>';
+      }else{
+        html+='<div class="field-group'+fullCls+'"><label>'+(f.label||f.name)+' '+reqStar+' '+lockBadge+'</label>'
+          +'<input type="'+(f.type||'text')+'" name="'+f.name+'" '+reqAttr+' '+lockAttr+' '+maxAttr+' '+ph+'></div>';
+      }
+    });
+    html+='</div></div>';
+  });
+
+  html+='<div class="submit-zone"><div id="statusMsg" class="status-msg"></div>'
+    +'<button type="submit" class="btn-submit" id="submitBtn">✅ ثبت اطلاعات دانش آموز</button>'
+    +'<p style="font-size:12px;color:var(--text-muted);text-align:center">با ثبت اطلاعات، نام دانش آموز شما در سیستم '+SCHOOL_NAME+' ثبت خواهد شد</p></div>';
+
+  form.innerHTML=html;
+  form.addEventListener('submit',handleSubmit);
+  document.getElementById('loadingOverlay').style.display='none';
+  document.getElementById('formWrapper').style.display='flex';
+}
+
+function handlePhoto(input){
+  if(!input.files||!input.files[0])return;
+  if(input.files[0].size>5*1024*1024){alert('عکس باید کمتر از ۵MB باشد');input.value='';return;}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    // فشرده‌سازی عکس قبل از ذخیره
+    var img=new Image();
+    img.onload=function(){
+      var canvas=document.createElement('canvas');
+      // حداکثر ۲۰۰x۲۰۰ پیکسل برای ذخیره در Sheets
+      var maxSize=150;
+      var w=img.width,h=img.height;
+      if(w>h){if(w>maxSize){h=Math.round(h*maxSize/w);w=maxSize;}}
+      else{if(h>maxSize){w=Math.round(w*maxSize/h);h=maxSize;}}
+      canvas.width=w;canvas.height=h;
+      var ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      // کیفیت ۰.۷ برای فشرده‌سازی بیشتر
+      photoData=canvas.toDataURL('image/jpeg',0.6);
+      var box=document.getElementById('photoPreviewBox');
+      box.innerHTML='<img src="'+photoData+'" style="width:100%;height:100%;object-fit:cover">';
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+async function checkDuplicate(kodMelli){
+  try{
+    var res=await fetch(SHEETS_URL+'?action=check&kodMelli='+encodeURIComponent(kodMelli));
+    var data=await res.json();return data.exists||false;
+  }catch(e){return false;}
+}
+
+async function handleSubmit(e){
+  e.preventDefault();
+  if(!SHEETS_URL||SHEETS_URL==='YOUR_WEB_APP_URL_HERE'){showStatus('⚠️ سیستم در حال راه‌اندازی است.','warning');return;}
+  var kodMelliEl=document.querySelector('[name="کد ملی"]');
+  var kodMelli=kodMelliEl?kodMelliEl.value.trim():'';
+  if(kodMelli.length!==10||isNaN(kodMelli)){showStatus('❌ کد ملی باید ۱۰ رقم باشد.','error');return;}
+  var btn=document.getElementById('submitBtn');
+  btn.disabled=true;btn.innerHTML='در حال بررسی... <span class="loading-spinner"></span>';
+  var isDup=await checkDuplicate(kodMelli);
+  if(isDup){
+    showStatus('⚠️ اطلاعات این دانش آموز قبلاً ثبت شده است.\nاگر نیاز به ویرایش دارید با دفتر مدرسه تماس بگیرید.','warning');
+    btn.disabled=false;btn.innerHTML='✅ ثبت اطلاعات دانش آموز';return;
+  }
+  btn.innerHTML='در حال ارسال... <span class="loading-spinner"></span>';
+  var data={'تاریخ ثبت':new Date().toLocaleDateString('fa-IR')};
+  document.querySelectorAll('#mainForm input,#mainForm select,#mainForm textarea').forEach(function(el){
+    if(!el.name||el.disabled||el.type==='file') return;
+    if(el.value&&el.value.startsWith('data:')) return;
+    data[el.name]=el.value||'';
+  });
+  if(photoEnabled&&photoData) data['عکس']=photoData;
+  try{
+    await fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    showStatus('✅ اطلاعات دانش آموز جهت ثبت نام در '+SCHOOL_NAME+' با موفقیت ثبت شد.\n\nکد پیگیری: '+kodMelli,'success');
+    e.target.reset();photoData='';
+    var pb=document.getElementById('photoPreviewBox');if(pb)pb.innerHTML='<span>👤</span>';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(err){showStatus('❌ خطا در ارسال. لطفاً دوباره تلاش کنید.','error');}
+  btn.disabled=false;btn.innerHTML='✅ ثبت اطلاعات دانش آموز';
+}
+function toggleSection(id){document.getElementById(id).closest('.section-card').classList.toggle('collapsed');}
+function showStatus(msg,type){
+  var el=document.getElementById('statusMsg');el.textContent=msg;el.className='status-msg '+type;
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  setTimeout(function(){el.className='status-msg';},type==='success'?12000:7000);
+}
+loadSettings();
+</script>
+</body>
+</html>
