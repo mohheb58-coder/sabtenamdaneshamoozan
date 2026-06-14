@@ -126,6 +126,24 @@ var lockedFields=['لباس فرم مدرسه','سایز لباس','مبلغ  پ
 var photoEnabled=false;
 var photoData='';
 
+// تابع برای حفاظت از صفرهای اول در فیلدهای عددی (برای Google Sheets)
+function prepareForSheets(data) {
+  var prepared = Object.assign({}, data);
+  var fieldsNeedingTextFormat = ['کد ملی', 'سریال شناسنامه', 'کد ملی پدر', 'کد ملی مادر', 'سریال شناسنامه پدر', 'سریال شناسنامه مادر', 'کد پستی'];
+  
+  fieldsNeedingTextFormat.forEach(function(field) {
+    if (prepared[field] && String(prepared[field]).trim()) {
+      var val = String(prepared[field]).trim();
+      if (val.match(/^[0-9]/)) {
+        // apostrophe اضافه کن برای حفاظت از صفرهای اول
+        prepared[field] = "'" + val;
+      }
+    }
+  });
+  
+  return prepared;
+}
+
 async function loadSettings(){
   if(!SHEETS_URL||SHEETS_URL==='YOUR_WEB_APP_URL_HERE'){buildForm();return;}
   try{
@@ -191,7 +209,7 @@ function buildForm(){
     if(!fields.length) return;
     var hClass='section-header'+(sec.style?' '+sec.style:'');
     var noteHtml=sec.note?'<span style="font-size:11px;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:6px;margin-right:4px">'+sec.note+'</span>':'';
-    html+='<div class="section-card'+(SECTIONS_DEF.indexOf(sec)===0?'':' collapsed')+'" id="sec_'+sec.key+'">'
+    html+='<div class="section-card" id="sec_'+sec.key+'">'
       +'<div class="'+hClass+'" onclick="toggleSection(\'sec_'+sec.key+'\')">'
       +'<span>'+sec.icon+'</span> '+sec.title+' '+noteHtml+'<span class="toggle-icon">▾</span></div>'
       +'<div class="section-body">';
@@ -253,7 +271,7 @@ function handlePhoto(input){
     img.onload=function(){
       var canvas=document.createElement('canvas');
       // حداکثر ۲۰۰x۲۰۰ پیکسل برای ذخیره در Sheets
-      var maxSize=150;
+      var maxSize=80;
       var w=img.width,h=img.height;
       if(w>h){if(w>maxSize){h=Math.round(h*maxSize/w);w=maxSize;}}
       else{if(h>maxSize){w=Math.round(w*maxSize/h);h=maxSize;}}
@@ -261,7 +279,7 @@ function handlePhoto(input){
       var ctx=canvas.getContext('2d');
       ctx.drawImage(img,0,0,w,h);
       // کیفیت ۰.۷ برای فشرده‌سازی بیشتر
-      photoData=canvas.toDataURL('image/jpeg',0.6);
+      photoData=canvas.toDataURL('image/jpeg',0.3);
       var box=document.getElementById('photoPreviewBox');
       box.innerHTML='<img src="'+photoData+'" style="width:100%;height:100%;object-fit:cover">';
     };
@@ -299,7 +317,8 @@ async function handleSubmit(e){
   });
   if(photoEnabled&&photoData) data['عکس']=photoData;
   try{
-    await fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    var sheetsData = prepareForSheets(data);
+    await fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(sheetsData)});
     showStatus('✅ اطلاعات دانش آموز جهت ثبت نام در '+SCHOOL_NAME+' با موفقیت ثبت شد.\n\nکد پیگیری: '+kodMelli,'success');
     e.target.reset();photoData='';
     var pb=document.getElementById('photoPreviewBox');if(pb)pb.innerHTML='<span>👤</span>';
