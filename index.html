@@ -270,16 +270,16 @@ function handlePhoto(input){
     var img=new Image();
     img.onload=function(){
       var canvas=document.createElement('canvas');
-      // حداکثر ۲۰۰x۲۰۰ پیکسل برای ذخیره در Sheets
-      var maxSize=80;
+      // حداکثر ۲۲۰x۲۲۰ پیکسل برای ذخیره در Sheets
+      var maxSize=220;
       var w=img.width,h=img.height;
       if(w>h){if(w>maxSize){h=Math.round(h*maxSize/w);w=maxSize;}}
       else{if(h>maxSize){w=Math.round(w*maxSize/h);h=maxSize;}}
       canvas.width=w;canvas.height=h;
       var ctx=canvas.getContext('2d');
       ctx.drawImage(img,0,0,w,h);
-      // کیفیت ۰.۷ برای فشرده‌سازی بیشتر
-      photoData=canvas.toDataURL('image/jpeg',0.3);
+      // کیفیت ۰.۷۲ برای حفظ تعادل بین کیفیت و حجم
+      photoData=canvas.toDataURL('image/jpeg',0.72);
       var box=document.getElementById('photoPreviewBox');
       box.innerHTML='<img src="'+photoData+'" style="width:100%;height:100%;object-fit:cover">';
     };
